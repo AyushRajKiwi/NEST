@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { CreateCourseDto } from '../dto/create-course.dto';
+import { UpdateCourseDto } from '../dto/update-course.dto';
+import { CourseRepository } from '../repositories.ts/course.repository';
 
 @Injectable()
 export class CoursesService {
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+  constructor(private readonly courseRepository: CourseRepository) {}
+
+  async create(createCourseDto: CreateCourseDto) {
+    return await this.courseRepository.createCourse(createCourseDto);
   }
 
   findAll() {
@@ -17,7 +20,7 @@ export class CoursesService {
   }
 
   update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course`;
+    return `This action updates a #${id} course with data: ${JSON.stringify(updateCourseDto)}`;
   }
 
   remove(id: number) {

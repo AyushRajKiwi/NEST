@@ -26,7 +26,7 @@ export class AuthService {
       ...registerUserDto,
       password: hash,
     });
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, role: user.role };
     const token = await this.jwtService.signAsync(payload);
     console.log(token);
     return token;
@@ -37,7 +37,7 @@ export class AuthService {
     // 3. generate a JWT token
     // 4. send token in response
     const user = await this.userService.validateUser(loginUserDto);
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, role: user.role };
     const token = await this.jwtService.signAsync(payload);
     console.log('THIS IS THE GENERATED TOKEN:', token);
     return token;

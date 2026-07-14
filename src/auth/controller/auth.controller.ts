@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../../user/dto/registerUser.dto';
 import { LoginUserDto } from '../../user/dto/loginUser.dto';
 import { AuthGuard } from '../guard/auth.guard';
-import { UserRepository } from '../../user/repositories/repositories';
+import { UserRepository } from '../../user/repositories/user.repositories';
 
 @Controller('auth') // auth/register
 export class AuthController {
