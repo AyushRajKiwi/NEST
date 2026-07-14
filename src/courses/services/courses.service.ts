@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 import { CourseRepository } from '../repositories.ts/course.repository';
+import { Course } from '../entities/course.entity';
 
 @Injectable()
 export class CoursesService {
@@ -11,19 +12,30 @@ export class CoursesService {
     return await this.courseRepository.createCourse(createCourseDto);
   }
 
-  findAll() {
-    return `This action returns all courses`;
+  async findAll() {
+    return await this.courseRepository.findAllCourses();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} course`;
+  async findOne(id: number): Promise<Course | null> {
+    const course = await this.courseRepository.findOneCourse(id);
+    const invalidCredentialsError = new UnauthorizedException(
+      'Invalid Course ID',
+    );
+    if (!course) {
+      throw invalidCredentialsError;
+    }
+    return course;
   }
 
-  update(id: number, updateCourseDto: UpdateCourseDto) {
-    return `This action updates a #${id} course with data: ${JSON.stringify(updateCourseDto)}`;
+  async update(id: number, updateCourseDto: UpdateCourseDto) {
+    const updateCourse = await this.courseRepository.updateCourse(
+      id,
+      updateCourseDto,
+    );
+    return updateCourse;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} course`;
+  async remove(id: number) {
+    return await this.courseRepository.removeCourse(id);
   }
 }

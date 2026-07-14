@@ -15,6 +15,7 @@ import { AuthGuard } from 'src/auth/guard/auth.guard';
 import { Roles } from 'src/user/decorators/role.decorator';
 import { Role } from 'src/user/enum/user.types';
 import { RolesGuard } from 'src/auth/guard/role.guard';
+import { Course } from '../entities/course.entity';
 
 @Controller('courses')
 export class CoursesController {
@@ -33,17 +34,18 @@ export class CoursesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(+id);
+  findOne(@Param('id') id: number): Promise<Course | null> {
+    const course = this.coursesService.findOne(id);
+    return course;
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.coursesService.update(+id, updateCourseDto);
+  update(@Param('id') id: number, @Body() updateCourseDto: UpdateCourseDto) {
+    return this.coursesService.update(id, updateCourseDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coursesService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.coursesService.remove(id);
   }
 }

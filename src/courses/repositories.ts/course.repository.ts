@@ -1,7 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCourseDto } from 'src/courses/dto/create-course.dto';
-// import { UpdateCourseDto } from 'src/courses/dto/update-course.dto';
+import { UpdateCourseDto } from 'src/courses/dto/update-course.dto';
 import { Repository } from 'typeorm';
 import { Course } from '../entities/course.entity';
 
@@ -29,5 +33,36 @@ export class CourseRepository {
       }
       throw err;
     }
+  }
+
+  async findAllCourses(): Promise<Course[]> {
+    return await this.coursesRepository.find();
+  }
+
+  async findOneCourse(id: number): Promise<Course | null> {
+    const course = await this.coursesRepository.findOne({ where: { id: id } });
+    return course;
+  }
+
+  async updateCourse(id: number, updateCourseDto: UpdateCourseDto) {
+    await this.coursesRepository.update(id, updateCourseDto);
+    const updatedCourse = await this.coursesRepository.findOne({
+      where: { id: id },
+    });
+    if (!updatedCourse) {
+      throw new NotFoundException('Course with ID ${id} not found');
+    }
+    return updatedCourse;
+  }
+
+  async removeCourse(id: number) {
+    await this.coursesRepository.delete(id);
+    const courseToRemove = await this.coursesRepository.findOne({
+      where: { id: id },
+    });
+    if (!courseToRemove) {
+      throw new NotFoundException('Course deleted');
+    }
+    return await this.coursesRepository.remove(courseToRemove);
   }
 }
